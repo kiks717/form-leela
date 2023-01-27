@@ -1,22 +1,25 @@
 import React from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom'
+import {  Link, useNavigate } from 'react-router-dom'
 import { createPostAction } from '../../store/actions/PostsActions';
 
 const CreatePost = (props) => {
     const [title,setTitle] = useState('');
     const [description,setDescription] = useState('');
 
+    let navigate = useNavigate();
+    const dispatch = useDispatch();
+
 
     const onCreatePost = (e) => {
-        const dispatch = useDispatch();
         e.preventDefault();
         const postData = {
             //framing the data 
             title, description
         };
-        dispatch(createPostAction(postData, props.history));
+        dispatch(createPostAction(postData));
+        // navigate({pathname : '/posts'})
     }
   return (
     <div>
@@ -42,7 +45,9 @@ const CreatePost = (props) => {
                 </div>
 
                 <div>
-                    <button type='submit'>Create Post</button>
+                    <button type='button' 
+                    onClick={() => navigate({pathname : '/posts'})}
+                    >Create Post</button>
                 </div>
             </form>
         </div>

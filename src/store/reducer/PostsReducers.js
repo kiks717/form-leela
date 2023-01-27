@@ -1,6 +1,8 @@
-import { CONFIRMED_GET_POSTS, CREATE_POST_ACTION } from "../actions/PostsActions";
+import { CONFIRMED_CREATE_POST_ACTION, CONFIRMED_EDIT_POST_ACTION, CONFIRMED_GET_POSTS, CREATE_POST_ACTION } from "../actions/PostsActions";
 
-const initialState = {posts : []}
+const initialState = {posts : [
+    {title : '', description : '', id : Math.random()}
+]}
 
 export function PostsReducers(state = initialState,action){
         if(action.type === CREATE_POST_ACTION){
@@ -16,6 +18,29 @@ export function PostsReducers(state = initialState,action){
                 ...state,
                 posts,
             };
+        }
+        if(action.type === CONFIRMED_EDIT_POST_ACTION){
+            const posts = [...state.posts];
+            const postIndex = posts.findIndex(post => post.id === action.payload.id);
+            console.log(postIndex)
+            posts[postIndex] = action.payload;
+            return {
+                ...state,
+                posts,
+            };
+
+        };
+        if(action.type ===  CONFIRMED_CREATE_POST_ACTION){
+            /**copy of state then pushing new post to state and 
+             * overwriting with posts data
+             */
+            const posts = [...state.posts];
+            posts.push(action.payload);
+
+            return{
+                ...state,
+                posts
+            }
         }
 
         if(action.type === CONFIRMED_GET_POSTS){

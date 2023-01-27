@@ -1,8 +1,10 @@
-import { applyMiddleware, configureStore } from "@reduxjs/toolkit";
+import { applyMiddleware, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { PostsReducers } from './reducer/PostsReducers';
 import { confirmedPostAction, GET_POSTS } from "./actions/PostsActions";
 import axios from "axios";
 import thunk from "redux-thunk";
+import { PostsListReducer } from "./reducer/PostsListReducer";
+import { AuthReducer } from "./reducer/AuthReducer";
 
 //logger will log it to the console everytime middleware is dispatched
 const  loggerMiddleware = (store) => (next) => (action) => {
@@ -17,27 +19,33 @@ const  loggerMiddleware = (store) => (next) => (action) => {
     return result;
 };
 
-const fetchDataMiddleware = store => next => action => {
+const fetchDataMiddleware = (store) => (next) => (action) => {
+    
     if(action.type === GET_POSTS){
         //ajax call
         axios.get(`
         https://web-app-create-default-rtdb.firebaseio.com/posts.json`)
         .then((response) => {
             console.log(response.data);
+            
             let posts = [];
             for(let key in response.data){
                 posts.push({...response.data[key], id : key})
             };
+
             store.dispatch(confirmedPostAction(posts));
             });
     }
     return next(action);
 }
-const middleware = applyMiddleware(loggerMiddleware,fetchDataMiddleware);
+const middleware = applyMiddleware([thunk]);
 
-
+const rootReducer = combineReducers({
+    posts : PostsReducers,
+    auth  : AuthReducer
+});
 export const store = configureStore({
-    reducer : PostsReducers,
+    reducer : rootReducer,
     middleware : middleware[thunk]
 
 });
