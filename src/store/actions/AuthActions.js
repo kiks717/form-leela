@@ -5,6 +5,7 @@ export const SIGN_UP_FAILED = '[sign up action] failed signup';
 export const LOG_IN_CONFIRMED = '[login action] confirmed login';
 export const LOG_IN_FAILED = '[login action] failed login';
 export const LOADING_ACTION = '[loading action] show loading';
+export const LOGOUT_ACTION = '[logout action] logout action';
 
 
 export function signupAction(email,password){
@@ -60,3 +61,9 @@ export function loadingAction(status){
         payload : status,
     }
 }
+
+export function logoutAction(){
+    return {
+        type : LOGOUT_ACTION,
+    };
+};

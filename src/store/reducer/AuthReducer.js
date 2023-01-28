@@ -1,4 +1,4 @@
-import { LOADING_ACTION, LOG_IN_CONFIRMED, LOG_IN_FAILED, SIGN_UP_CONFIRMED, SIGN_UP_FAILED } from "../actions/AuthActions";
+import { LOADING_ACTION, LOGOUT_ACTION, LOG_IN_CONFIRMED, LOG_IN_FAILED, SIGN_UP_CONFIRMED, SIGN_UP_FAILED } from "../actions/AuthActions";
 
 const initialState = {
     auth: {
@@ -49,6 +49,19 @@ export function AuthReducer(state = initialState,action){
 
         }
     };
+
+    if(action.type === LOGOUT_ACTION){
+        return {
+            ...state,
+            auth: {
+                email : '',
+                idToken : '',
+                localId : '',
+                expiresIn : '',
+                refreshToken : ''
+            },
+        }
+    }
 
     return state;
 };
