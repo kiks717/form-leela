@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {connect, useDispatch} from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
 import { loadingAction, signupAction } from '../../store/actions/AuthActions';
 import classes from './signup.module.css'
@@ -9,7 +10,7 @@ import classes from './signup.module.css'
 const SingUp = (props) => {
 
     const dispatch = useDispatch();
-
+    const navigate = useNavigate();
     const [email,setEmail]  = useState('');
     const [password,setPassword]  = useState('');
     let errorsObj = {email : "", password : ""};
@@ -31,7 +32,7 @@ const SingUp = (props) => {
         
         if(error) {return};
         dispatch(loadingAction(true));
-        dispatch(signupAction(email,password));
+        dispatch(signupAction(email,password,navigate));
     }
   return (
     <div className={classes.signup}>

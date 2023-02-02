@@ -1,4 +1,5 @@
-import { formatError, login, signUp } from "../../services/AuthService"
+import { useNavigate } from "react-router-dom";
+import { formatError, login, runLogoutTimer, saveTokenInLocalStorage, signUp } from "../../services/AuthService"
 
 export const SIGN_UP_CONFIRMED = '[sign up action] confirmed signup';
 export const SIGN_UP_FAILED = '[sign up action] failed signup';
@@ -8,23 +9,33 @@ export const LOADING_ACTION = '[loading action] show loading';
 export const LOGOUT_ACTION = '[logout action] logout action';
 
 
-export function signupAction(email,password){
+export function signupAction(email,password,navigate){
     return (dispatch) => {
         signUp(email,password).then((response) => {
-            dispatch(confirmedSignUpAction(response));
-        }).catch((error) => {
+            
+            saveTokenInLocalStorage(response.data);
+            runLogoutTimer(dispatch,response.data.expiresIn * 1000,navigate);
+
+            dispatch(confirmedSignUpAction(response.data));
+            navigate({pathname: '/'})
+            }).catch((error) => {
             const errorMessage = formatError(error.response.data);
             dispatch(failedSignUpAction(errorMessage));
         })
     };
 }
 
-export function logInAction(email,password){
+
+export function logInAction(email,password,navigate){
     return (dispatch) => {
         login(email,password).then((response) => {
+
+            saveTokenInLocalStorage(response.data);
+            runLogoutTimer(dispatch,response.data.expiresIn * 1000, navigate);
             dispatch(confirmedLoginAction(response));
+            navigate({pathname: '/'})
         }).catch((error) => {
-            const errorMessage = formatError(error.response.data);
+            const errorMessage = formatError(error.response);
             dispatch(failedLoginAction(errorMessage));
         })
     };
@@ -62,7 +73,9 @@ export function loadingAction(status){
     }
 }
 
-export function logoutAction(){
+export function logoutAction(navigate){
+    localStorage.removeItem('userDetails');
+    navigate({pathname : '/login'})
     return {
         type : LOGOUT_ACTION,
     };

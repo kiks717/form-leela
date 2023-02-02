@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { connect, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader'
 import { loadingAction, logInAction } from '../../store/actions/AuthActions';
 import classes from '../SignUp/signup.module.css'
 
 function Login(props) {
     const dispatch = useDispatch();
-    
+
+    const navigate = useNavigate();
     const [email,setEmail]  = useState('');
     const [password,setPassword]  = useState('');
     let errorsObj = {email : "", password : ""};
@@ -28,8 +30,7 @@ function Login(props) {
         
         if(error) {return};
         dispatch(loadingAction(true));
-        // dispatch(signupAction(email,password));
-        dispatch(logInAction(email,password));
+        dispatch(logInAction(email,password,navigate));
     };
 
   return (
